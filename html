@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>My Website</title>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/style.css') }}">
+    <script src="{{ url_for('static', filename='js/gauge.js') }}"></script>
+
+    <style>
+        .header {
+            text-align: center;
+            margin-top: 50px;
+        }
+
+        .title {
+            font-size: 28px;
+            font-weight: bold;
+            margin: 0;
+        }
+
+        .subtitle {
+            font-size: 24px;
+            margin: 0;
+        }
+    </style>
+</head>
+<body>
+
+    <canvas id="gauge"></canvas>
+
+    <div class="container">
+        <div class="header">
+            <h1 class="title">Vantage Pro2 Weather Conditions</h1>
+            <p class="subtitle">Located in TA, Uniten</p>
+        </div>
+        <div class="map-container">
+            <iframe width="400" height="300" frameborder="0" scrolling="no" marginheight="0" marginwidth="0" src="https://embed.windy.com/embed2.html?lat=2.977007&lon=101.733376&zoom=10&level=surface&overlay=radar&menu=&message=&marker=&calendar=&pressure=&type=map&location=coordinates&detail=&detailLat=2.977007&detailLon=101.733376&metricWind=default&metricTemp=default&radarRange=-1"></iframe>
+        </div>
+        <div style="width: 400px; height: 400px;">
+            <iframe width="400" height="300" frameborder="0" scrolling="no" marginheight="0" marginwidth="0" src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3984.067123262496!2d101.73118721475606!3d2.9772769973574864!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x31cc4781e21c7ee1%3A0x5836e4be4f4c9ba8!2sKTXAUSTI3323!5e0!3m2!1sen!2smy!4v1621740829129!5m2!1sen!2smy"></iframe>
+        </div>
+        <div id="weather-data"></div>
+    </div>
+
+    <script>
+        var opts = {
+            angle: -0.2, // The start angle
+            lineWidth: 0.2, // The line thickness
+            radiusScale: 1, // Relative radius
+            pointer: {
+                length: 0.6, // The length of the pointer
+                strokeWidth: 0.035, // The line thickness of the pointer
+                color: '#000000' // Fill color of the pointer
+            },
+            limitMax: false,   // If true, the pointer will not go past the end of the gauge
+            limitMin: false,   // If true, the pointer will not go below the start of the gauge
+            strokeColor: '#E0E0E0',   // The color of the outer circle
+            generateGradient: true,
+            highDpiSupport: true     // High resolution support
+    </script>
+
+    <script>
+            ,var :opts = {
+                    angle: -0.2, // The start angle
+                    lineWidth: 0.2, // The line thickness
+                    radiusScale: 1, // Relative radius
+                    pointer: {
+                        length: 0.6, // The length of the pointer
+                        strokeWidth: 0.035, // The line thickness of the pointer
+                        color: '#000000' // Fill color of the pointer
+                    },
+                    limitMax: false,   // If true, the pointer will not go past the end of the gauge
+                    limitMin: false,   // If true, the pointer will not go below the start of the gauge
+                    strokeColor: '#E0E0E0',   // The color of the outer circle
+                    generateGradient: true,
+                    highDpiSupport: true     // High resolution support
+                },
+
+            var target = document.getElementById('gauge');
+
+                var gauge = new Gauge(target).setOptions(opts); // create sexy gauge!
+
+                gauge.maxValue = 3000; // set max gauge value
+                gauge.setMinValue(0);  // set min value
+                gauge.animationSpeed = 32; // set animation speed (32 is default value)
+                gauge.set(1250, // set actual value
+
+                // Fetch weather data from API endpoint
+            fetch('/weather_data')
+        .then(response => response.json())
+                .then(data => {
+                    // Extract relevant weather data
+                    const temperatureC = data.temperature;
+                    const humidity = data.humidity;
+                    const windSpeedKmh = data.wind_speed * 3.6; // Convert from m/s to km/h
+
+                    // Display weather data in HTML
+                    const weatherDataDiv = document.getElementById('weather-data');
+                    weatherDataDiv.innerHTML = `
+                <p>Temperature: ${temperatureC} &deg;C</p>
+                <p>Humidity: ${humidity} %RH</p>
+                <p>Wind speed: ${windSpeedKmh.toFixed(2)} km/h</p>
+            `;
+                })
+                .catch(error => {
+                    console.error('Error fetching weather data:', error);
+                }));
+
+    </script>
+
+</body>
+</html>
